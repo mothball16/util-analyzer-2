@@ -1,26 +1,26 @@
 <!-- first non tutorial vue component  :o -->
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-    const props = defineProps({
-        limit: {
-            type: Number,
-            required: true,
-        }
-    });
-
-    const isTooSmall = ref(false);
-    const checkSize = () => {        
-        isTooSmall.value = window.innerWidth < props.limit;
+const props = defineProps({
+    limit: {
+        type: Number,
+        required: true,
     }
+});
 
-    onMounted(() => {
-        checkSize();
-        window.addEventListener('resize', checkSize);
-    });
+const isTooSmall = ref(false);
+const checkSize = () => {        
+    isTooSmall.value = window.innerWidth < props.limit;
+}
 
-    onUnmounted(() => {
-        window.removeEventListener('resize', checkSize);
-    });
+onMounted(() => {
+    checkSize();
+    window.addEventListener('resize', checkSize);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('resize', checkSize);
+});
 </script>
 
 <template>
