@@ -1,10 +1,15 @@
 <script setup>
-
+  const props = defineProps({
+    message: {
+      type: String,
+    }
+  });
 </script>
 
 <template>
     <div>
         <div class="loading-ring"></div>
+        <p v-if="message">{{message}}</p>
     </div>
 </template>
 
