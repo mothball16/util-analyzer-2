@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed} from 'vue';
 import LoadingScreen from './components/LoadingScreen.vue';
 import Map from './components/Map.vue';
 import MatchFilters from './components/MatchFilters.vue';
@@ -8,22 +8,33 @@ import PlayerSelect from './components/PlayerSelect.vue';
 import ScreenTooSmall from './components/ScreenTooSmall.vue';
 import UtilityCatalog from './components/UtilityCatalog.vue';
 import { UI, UTILITY_OPTS, TEAM_OPTS } from "./constants.js";
+import { getMatchData } from './services/data-service.js';
 
-const teams = ref([[
-  {
-    steamid: "1",
-    name: "player1",
-  }
-], [{
-    steamid: "2",
-    name: "player2",
-  },]]);
 const selectedPlayer = ref({
   steamid: "none",
   name: "none",
 });
 const selectedUtility = ref(UTILITY_OPTS[0].id);
 const selectedTeam = ref(TEAM_OPTS[0].id);
+
+const loadingStatus = ref(null);
+const errorMessage = ref(null);
+
+const matchData = ref(null);
+const matchNades = computed(() => matchData.value ? matchData.value.grenades : []);
+const matchTeams = computed(() => matchData.value ? matchData.value.teams : [
+  [{steamid: "1",name: "player1",}], [{steamid: "2",name: "player2",},]]);
+
+
+getMatchData((value) => {
+  loadingStatus.value = value;
+}).then((data) => {
+  matchData.value = data;
+  loadingStatus.value = null;
+}).catch((error) => {
+  loadingStatus.value = null;
+  errorMessage.value = error.message;
+});
 
 </script>
 
@@ -40,11 +51,20 @@ const selectedTeam = ref(TEAM_OPTS[0].id);
           class="overlay" 
           :limit="UI.TOO_SMALL"/>
         <LoadingScreen 
+          v-if="loadingStatus"
           class="overlay"
-          v-if="false"/>
-        
-        <Map id="map" class="card stay-in-grid"/>
-        <MatchSummary id="summary" class="card stay-in-grid"/>
+          :message="loadingStatus"/>
+        <div v-if="errorMessage" class="overlay">
+          <p>{{ errorMessage }}</p>
+        </div>
+        <Map 
+          id="map" 
+          class="card stay-in-grid"
+          v-if="matchData"
+          :matchData="matchData"/>
+        <MatchSummary 
+          id="summary" 
+          class="card stay-in-grid"/>
         <MatchFilters 
           id="filter" 
           class="card stay-in-grid"
@@ -54,10 +74,13 @@ const selectedTeam = ref(TEAM_OPTS[0].id);
         <PlayerSelect 
           id="select-player" 
           class="card stay-in-grid"
-          :teams="teams"
+          :teams="matchTeams"
           v-model="selectedPlayer"
         />
-        <UtilityCatalog id="catalog" class="card stay-in-grid"/>
+        <UtilityCatalog 
+          id="catalog"
+          class="card stay-in-grid"
+          />
           
     </main>
     <footer>
