@@ -1,0 +1,23 @@
+{
+  "name": "client",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.4",
+    "vite": "^7.2.4"
+  },
+  "dependencies": {
+    "@laihoe/demoparser2": "^0.40.2",
+    "firebase": "^12.6.0",
+    "leader-line": "^1.0.8",
+    "localforage": "^1.10.0",
+    "obscenity": "^0.4.5",
+    "vue": "^3.5.28"
+  }
+}
