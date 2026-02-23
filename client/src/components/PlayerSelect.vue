@@ -21,7 +21,7 @@ const selectPlayer = (player) => {
 <template>
     <div>
         <div class="player-top">
-        <h2>Select Player</h2>
+            <h2>Select Player</h2>
         </div>
         
         <div class="player-lists">
@@ -91,6 +91,11 @@ const selectPlayer = (player) => {
   z-index: 1;
 }
 
+.player-card:hover {
+  cursor: pointer;
+  color: #c9c9c9;
+}
+
 .player-card::before {
   content: "";
   position: absolute;
@@ -106,6 +111,11 @@ const selectPlayer = (player) => {
 .player-card--sel, .player-card--sel::before {
   width: 100%;
 }
+
+
+
+
+
 .scrollable {
   overflow-y: auto;
   scrollbar-width: thin; 
