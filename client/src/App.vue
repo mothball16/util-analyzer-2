@@ -24,6 +24,8 @@ const matchData = ref(null);
 const matchNades = computed(() => matchData.value ? matchData.value.grenades : []);
 const matchTeams = computed(() => matchData.value ? matchData.value.teams : [
   [{steamid: "1",name: "player1",}], [{steamid: "2",name: "player2",},]]);
+const matchHeader = computed(() => matchData.value ? matchData.value.header : {});
+
 
 
 getMatchData((value) => {
@@ -61,7 +63,7 @@ getMatchData((value) => {
           id="map" 
           class="card stay-in-grid"
           v-if="matchData"
-          :matchData="matchData"/>
+          :matchHeader="matchHeader"/>
         <MatchSummary 
           id="summary" 
           class="card stay-in-grid"/>
@@ -148,10 +150,6 @@ main {
   grid-row: 1 / 4;
 }
 
-#map > .map {
-  width: 100%;
-  aspect-ratio: 1;
-}
 
 #map__points {
   position: absolute;

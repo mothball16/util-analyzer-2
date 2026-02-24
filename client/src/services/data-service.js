@@ -1,10 +1,10 @@
 import localforage from 'localforage';
-import { fetchTeams, fetchGrenades } from './match-service.js';
+import { fetchTeams, fetchGrenades, fetchHeader } from './match-service.js';
 
 export const getMatchData = async (updateLoadingText) => {
   try {
     updateLoadingText("Retrieving data...");
-    let data = await localforage.getItem("data");
+    let data = false;//await localforage.getItem("data");
 
     if (!data) {
       updateLoadingText("Formatting player data...");
@@ -13,9 +13,13 @@ export const getMatchData = async (updateLoadingText) => {
       updateLoadingText("Aggregating grenade data...");
       const grenades = (await fetchGrenades()).data;
 
+      updateLoadingText("Retrieving match header...");
+      const header = (await fetchHeader()).data;
+
       data = {
         teams,
         grenades,
+        header,
       };
 
       updateLoadingText("Saving data to local storage...");

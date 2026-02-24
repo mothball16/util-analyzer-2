@@ -25,10 +25,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const functions = getFunctions(app);
 // emulator debugging
-//connectFunctionsEmulator(functions, "localhost", 5001);
+connectFunctionsEmulator(functions, "localhost", 5001);
 
 export const fetchTicks = httpsCallable(functions, "fetchTicks");
 export const fetchTeams = httpsCallable(functions, "fetchTeams");
 export const fetchGrenades = httpsCallable(functions, "fetchGrenades");
+export const fetchHeader = httpsCallable(functions, "fetchHeader");
 
 export default app;

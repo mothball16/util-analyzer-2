@@ -1,5 +1,5 @@
 import { GrenadeType } from "./enums.js";
-import { parseEvents, parseGrenades, parsePlayerInfo } from "@laihoe/demoparser2";
+import { parseEvents, parseGrenades, parsePlayerInfo, parseHeader } from "@laihoe/demoparser2";
 
 // https://gist.github.com/lucasmonstrox/7923db3dbe21536417b266bd4ff6ba44
 // TODO: parserounds example
@@ -24,6 +24,11 @@ export const extractTeams = (path) => {
     }
   }
   return teams;
+}
+
+
+export const extractHeader = (path) => {
+  return parseHeader(path);
 }
 
 export const extractGrenades = (path) => {
