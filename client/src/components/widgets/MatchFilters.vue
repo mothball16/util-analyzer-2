@@ -1,5 +1,5 @@
 <script setup>
-import Selector from './Selector.vue';
+import Selector from '../base/Selector.vue';
 import { TEAM_OPTS, UTILITY_OPTS } from '../../constants';
 
 const selectedUtility = defineModel('selectedUtility');

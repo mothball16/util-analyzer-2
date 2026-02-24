@@ -1,10 +1,10 @@
 <script setup>
 import { ref, computed} from 'vue';
-import LoadingScreen from './components/widgets/LoadingScreen.vue/index.js';
-import Map from './components/widgets/Map.vue/index.js';
-import MatchFilters from './components/widgets/MatchFilters.vue/index.js';
-import MatchSummary from './components/widgets/MatchSummary.vue/index.js';
-import PlayerSelect from './components/widgets/PlayerSelect.vue/index.js';
+import LoadingScreen from './components/widgets/LoadingScreen.vue';
+import Map from './components/widgets/Map.vue';
+import MatchFilters from './components/widgets/MatchFilters.vue';
+import MatchSummary from './components/widgets/MatchSummary.vue';
+import PlayerSelect from './components/widgets/PlayerSelect.vue';
 import ScreenTooSmall from './components/ScreenTooSmall.vue';
 import UtilityCatalog from './components/widgets/UtilityCatalog.vue';
 import { UI, UTILITY_OPTS, TEAM_OPTS } from "./constants.js";
@@ -42,7 +42,7 @@ getMatchData((value) => {
 
 <template>
     <header>
-        <h1><img src="./flashbang-icon.png" alt="logo">NadeAnalyzer</h1>
+        <h1><img src="/flashbang-icon.png" alt="logo">NadeAnalyzer</h1>
         <div class="header__sub">
             <p><a href="https://steamcommunity.com/my/gcpd/730?tab=matchhistorypremier">Find your .dem files here.</a></p>
             <button id="upload-btn">Upload .dem file</button>
