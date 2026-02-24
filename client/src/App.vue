@@ -1,12 +1,12 @@
 <script setup>
 import { ref, computed} from 'vue';
-import LoadingScreen from './components/LoadingScreen.vue';
-import Map from './components/Map.vue';
-import MatchFilters from './components/MatchFilters.vue';
-import MatchSummary from './components/MatchSummary.vue';
-import PlayerSelect from './components/PlayerSelect.vue';
+import LoadingScreen from './components/widgets/LoadingScreen.vue/index.js';
+import Map from './components/widgets/Map.vue/index.js';
+import MatchFilters from './components/widgets/MatchFilters.vue/index.js';
+import MatchSummary from './components/widgets/MatchSummary.vue/index.js';
+import PlayerSelect from './components/widgets/PlayerSelect.vue/index.js';
 import ScreenTooSmall from './components/ScreenTooSmall.vue';
-import UtilityCatalog from './components/UtilityCatalog.vue';
+import UtilityCatalog from './components/widgets/UtilityCatalog.vue';
 import { UI, UTILITY_OPTS, TEAM_OPTS } from "./constants.js";
 import { getMatchData } from './services/data-service.js';
 
@@ -22,8 +22,8 @@ const errorMessage = ref(null);
 
 const matchData = ref(null);
 const matchNades = computed(() => matchData.value ? matchData.value.grenades : []);
-const matchTeams = computed(() => matchData.value ? matchData.value.teams : [
-  [{steamid: "1",name: "player1",}], [{steamid: "2",name: "player2",},]]);
+const matchTeams = computed(() => matchData.value ? matchData.value.teams : 
+  [[{steamid: "1",name: "player1",}], [{steamid: "2",name: "player2",},]]);
 const matchHeader = computed(() => matchData.value ? matchData.value.header : {});
 
 
@@ -59,6 +59,7 @@ getMatchData((value) => {
         <div v-if="errorMessage" class="overlay">
           <p>{{ errorMessage }}</p>
         </div>
+
         <Map 
           id="map" 
           class="card stay-in-grid"
