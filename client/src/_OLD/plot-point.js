@@ -1,4 +1,4 @@
-import { gameToAppAxis } from "../util/plot-utils";
+import { gameToAppAxis } from "../util/plot";
 
 export class PlotPoint {
     constructor(x, y, size, map) {

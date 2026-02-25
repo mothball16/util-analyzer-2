@@ -1,20 +1,16 @@
 <script setup>
 import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useMatchStore } from '../../stores/useMatchStore';
 
-const props = defineProps({
-  teams: {
-    type: Array,
-    required: true,
-  }
-});
+const store = useMatchStore();
+const { matchTeams, selectedPlayer } = storeToRefs(store);
 
-const selected = defineModel();
-
-const teamLeft = computed(() => props.teams[0] || []);
-const teamRight = computed(() => props.teams[1] || []);
+const teamLeft = computed(() => matchTeams.value[0] || []);
+const teamRight = computed(() => matchTeams.value[1] || []);
 
 const selectPlayer = (player) => {
-    selected.value = player;
+    selectedPlayer.value = player;
 }
 </script>
 
@@ -30,7 +26,7 @@ const selectPlayer = (player) => {
                     v-for="plr in teamLeft"
                     :key="plr.steamid"
                     class="player-card"
-                    :class="{ 'player-card--sel': selected.steamid === plr.steamid}"
+                    :class="{ 'player-card--sel': selectedPlayer?.steamid === plr.steamid}"
                     @click="selectPlayer(plr)"
                 >
                     <h4>{{ plr.name }}</h4>
@@ -41,7 +37,7 @@ const selectPlayer = (player) => {
                     v-for="plr in teamRight"
                     :key="plr.steamid"
                     class="player-card" 
-                    :class="{ 'player-card--sel': selected.steamid === plr.steamid}"
+                    :class="{ 'player-card--sel': selectedPlayer?.steamid === plr.steamid}"
                     @click="selectPlayer(plr)"
                 >
                     <h4>{{ plr.name }}</h4>

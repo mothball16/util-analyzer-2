@@ -9,23 +9,14 @@ import ScreenTooSmall from './components/ScreenTooSmall.vue';
 import UtilityCatalog from './components/widgets/UtilityCatalog.vue';
 import { UI, UTILITY_OPTS, TEAM_OPTS } from "./constants.js";
 import { getMatchData } from './services/data-service.js';
-
-const selectedPlayer = ref({
-  steamid: "none",
-  name: "none",
-});
-const selectedUtility = ref(UTILITY_OPTS[0].id);
-const selectedTeam = ref(TEAM_OPTS[0].id);
+import { useMatchStore } from './stores/useMatchStore.js';
+import { storeToRefs } from 'pinia';
 
 const loadingStatus = ref(null);
 const errorMessage = ref(null);
 
-const matchData = ref(null);
-const matchNades = computed(() => matchData.value ? matchData.value.grenades : []);
-const matchTeams = computed(() => matchData.value ? matchData.value.teams : 
-  [[{steamid: "1",name: "player1",}], [{steamid: "2",name: "player2",},]]);
-const matchHeader = computed(() => matchData.value ? matchData.value.header : {});
-
+const store = useMatchStore();
+const { matchData, matchTeams, selectedPlayer } = storeToRefs(store);
 
 
 getMatchData((value) => {
@@ -49,42 +40,15 @@ getMatchData((value) => {
         </div>
     </header>
     <main>
-        <ScreenTooSmall 
-          class="overlay" 
-          :limit="UI.TOO_SMALL"/>
-        <LoadingScreen 
-          v-if="loadingStatus"
-          class="overlay"
-          :message="loadingStatus"/>
-        <div v-if="errorMessage" class="overlay">
-          <p>{{ errorMessage }}</p>
-        </div>
+        <ScreenTooSmall class="overlay" :limit="UI.TOO_SMALL"/>
+        <LoadingScreen v-if="loadingStatus" class="overlay" :message="loadingStatus"/>
+        <div v-if="errorMessage" class="overlay"><p>{{ errorMessage }}</p></div>
 
-        <Map 
-          id="map" 
-          class="card stay-in-grid"
-          v-if="matchData"
-          :matchHeader="matchHeader"/>
-        <MatchSummary 
-          id="summary" 
-          class="card stay-in-grid"/>
-        <MatchFilters 
-          id="filter" 
-          class="card stay-in-grid"
-          v-model:selectedUtility="selectedUtility"
-          v-model:selectedTeam="selectedTeam"
-        />
-        <PlayerSelect 
-          id="select-player" 
-          class="card stay-in-grid"
-          :teams="matchTeams"
-          v-model="selectedPlayer"
-        />
-        <UtilityCatalog 
-          id="catalog"
-          class="card stay-in-grid"
-          />
-          
+        <Map id="map" class="card stay-in-grid"/>
+        <MatchSummary id="summary" class="card stay-in-grid"/>
+        <MatchFilters id="filter" class="card stay-in-grid"/>
+        <PlayerSelect id="select-player" class="card stay-in-grid"/>
+        <UtilityCatalog id="catalog"class="card stay-in-grid"/>
     </main>
     <footer>
       <h2>Work in progress - shoot me a msg @mothball16 on discord if u actually use this</h2>

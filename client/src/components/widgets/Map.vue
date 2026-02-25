@@ -1,27 +1,31 @@
 <script setup>
-import { computed, ref } from 'vue';
-const props = defineProps({
-    matchHeader: {
-    type: Object,
-    required: true
-}});
+import { computed, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useMatchStore } from '../../stores/useMatchStore';
 
-const mapName = computed(() => props.matchHeader?.map_name);
+const store = useMatchStore();
+const { mapInfo } = storeToRefs(store);
+
 const errored = ref(false);
+
+// when the map info is updated, this allows the map to re-attempt display
+watch(mapInfo, () => {
+    errored.value = false;
+});
 
 </script>
 
 <template>
     <div class="container">
         <img 
-            v-if="!errored && mapName"
+            v-if="!errored && mapInfo.name"
             class="map-img"
-            :src="`/maps/${mapName}.webp`" 
-            :alt="mapName"
+            :src="`/maps/${mapInfo.name}.webp`" 
+            :alt="mapInfo.name"
             @error="errored = true"
         />
         <div v-else class="error-msg">
-            <p>Map not found: {{ mapName || 'unknown' }}</p>
+            <p>Map not found: {{ mapInfo.name || 'unknown' }}</p>
         </div>
     </div>
 </template>

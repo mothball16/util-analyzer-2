@@ -1,9 +1,11 @@
 <script setup>
+import { storeToRefs } from 'pinia';
+import { useMatchStore } from '../../stores/useMatchStore';
 import Selector from '../base/Selector.vue';
 import { TEAM_OPTS, UTILITY_OPTS } from '../../constants';
 
-const selectedUtility = defineModel('selectedUtility');
-const selectedTeam = defineModel('selectedTeam');
+const store = useMatchStore();
+const { selectedUtility, selectedTeam } = storeToRefs(store);
 </script>
 
 <template>
