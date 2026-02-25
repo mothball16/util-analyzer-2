@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed} from 'vue';
 import LoadingScreen from './components/widgets/LoadingScreen.vue';
+import AppHeader from './components/AppHeader.vue';
 import Map from './components/widgets/Map.vue';
 import MatchFilters from './components/widgets/MatchFilters.vue';
 import MatchSummary from './components/widgets/MatchSummary.vue';
@@ -16,7 +17,7 @@ const loadingStatus = ref(null);
 const errorMessage = ref(null);
 
 const store = useMatchStore();
-const { matchData, matchTeams, selectedPlayer } = storeToRefs(store);
+const { matchData } = storeToRefs(store);
 
 
 getMatchData((value) => {
@@ -32,13 +33,7 @@ getMatchData((value) => {
 </script>
 
 <template>
-    <header>
-        <h1><img src="/flashbang-icon.png" alt="logo">NadeAnalyzer</h1>
-        <div class="header__sub">
-            <p><a href="https://steamcommunity.com/my/gcpd/730?tab=matchhistorypremier">Find your .dem files here.</a></p>
-            <button id="upload-btn">Upload .dem file</button>
-        </div>
-    </header>
+    <AppHeader/>
     <main>
         <ScreenTooSmall class="overlay" :limit="UI.TOO_SMALL"/>
         <LoadingScreen v-if="loadingStatus" class="overlay" :message="loadingStatus"/>
@@ -60,17 +55,11 @@ body {
   margin: 0 auto;
 }
 
-header, footer {
+footer {
   display: flex;
   justify-content: space-between;
   padding: 1rem;
   background-color: #1a1a1a;
-}
-
-.header__sub {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
 }
 
 main {
