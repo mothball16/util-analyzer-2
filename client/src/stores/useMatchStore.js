@@ -6,7 +6,7 @@ import { MAP_DATA } from "../data/map-data";
 
 export const filterNades = (nades, steamid, utilityType, team) => {
     if (!nades) return [];
-    return nades.filter(n => {
+    return Object.values(nades).filter(n => {
         const matchPlayer = steamid === "none" || n.owner === steamid; 
         const matchType = utilityType === "ALL" || n.type === utilityType;
         //const matchTeam = team === "ALL" || n.team === team;

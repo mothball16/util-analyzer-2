@@ -25,6 +25,7 @@ getMatchData((value) => {
 }).then((data) => {
   matchData.value = data;
   loadingStatus.value = null;
+  console.log(matchData.value);
 }).catch((error) => {
   loadingStatus.value = null;
   errorMessage.value = error.message;
@@ -35,6 +36,7 @@ getMatchData((value) => {
 <template>
     <AppHeader/>
     <main>
+        <!-- todo: overhaul error message - shouldn't be a random div -->
         <ScreenTooSmall class="overlay" :limit="UI.TOO_SMALL"/>
         <LoadingScreen v-if="loadingStatus" class="overlay" :message="loadingStatus"/>
         <div v-if="errorMessage" class="overlay"><p>{{ errorMessage }}</p></div>
@@ -43,7 +45,7 @@ getMatchData((value) => {
         <MatchSummary id="summary" class="card stay-in-grid"/>
         <MatchFilters id="filter" class="card stay-in-grid"/>
         <PlayerSelect id="select-player" class="card stay-in-grid"/>
-        <UtilityCatalog id="catalog"class="card stay-in-grid"/>
+        <UtilityCatalog id="catalog" class="card stay-in-grid"/>
     </main>
     <footer>
       <h2>Work in progress - shoot me a msg @mothball16 on discord if u actually use this</h2>
