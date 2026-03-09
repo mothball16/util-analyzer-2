@@ -2,7 +2,7 @@ import { defineStore } from "pinia"
 import { ref, computed } from "vue"
 import { UTILITY_OPTS, TEAM_OPTS } from "../constants";
 import { MAP_DATA } from "../data/map-data";
-
+import { calculateScore } from "../services/scoring-service";
 
 export const filterNades = (nades, steamid, utilityType, team) => {
     if (!nades) return [];
@@ -10,12 +10,12 @@ export const filterNades = (nades, steamid, utilityType, team) => {
         const matchPlayer = steamid === "none" || n.owner === steamid; 
         const matchType = utilityType === "ALL" || n.type === utilityType;
         //const matchTeam = team === "ALL" || n.team === team;
-
         return matchPlayer && matchType;
     });
 }
 
 export const useMatchStore = defineStore('match', () => {
+     //--------------------- normal refs ---------------------
     const selectedPlayer = ref({
         steamid: "none",
         name: "none",
@@ -23,11 +23,24 @@ export const useMatchStore = defineStore('match', () => {
     const selectedUtility = ref(UTILITY_OPTS[0].id);
     const selectedTeam = ref(TEAM_OPTS[0].id);
 
-    const matchData = ref(null);
-    const matchNades = computed(() => matchData.value?.grenades ?? []);
-    const matchTeams = computed(() => matchData.value?.teams ??
+    const rawMatchData = ref(null);
+    const matchNades = ref({});
+
+    //------------------------- actions -------------------------
+    function setMatchData(data) {
+        rawMatchData.value = data;
+        const processedNades = data?.grenades ?? {};
+        for (const nade of Object.values(processedNades)) {
+            nade.score = calculateScore(nade);
+        }
+        matchNades.value = processedNades;
+    }
+
+    //--------------------- computed refs ---------------------
+    const matchTeams = computed(() => rawMatchData.value?.teams ??
     [[{steamid: "1",name: "player1",}], [{steamid: "2",name: "player2",},]]);
-    const matchHeader = computed(() => matchData.value?.header ?? {});
+    
+    const matchHeader = computed(() => rawMatchData.value?.header ?? {});
 
     const mapInfo = computed(() => {
         const name = matchHeader.value?.map_name;
@@ -40,7 +53,6 @@ export const useMatchStore = defineStore('match', () => {
         }
     });
 
-
     const filteredMatchNades = computed(() => 
         filterNades(matchNades.value, selectedPlayer.value.steamid, selectedUtility.value, selectedTeam.value));
 
@@ -49,12 +61,14 @@ export const useMatchStore = defineStore('match', () => {
     selectedUtility,
     selectedTeam,
 
-    matchData,
+    rawMatchData,
     matchNades,
     matchTeams,
     matchHeader,
     mapInfo,
 
-    filteredMatchNades
+    filteredMatchNades,
+
+    setMatchData,
    }
 })
