@@ -17,16 +17,17 @@ const loadingStatus = ref(null);
 const errorMessage = ref(null);
 
 const store = useMatchStore();
-const { matchData } = storeToRefs(store);
+const { rawMatchData } = storeToRefs(store);
 
 
 getMatchData((value) => {
   loadingStatus.value = value;
 }).then((data) => {
-  matchData.value = data;
+  store.setMatchData(data);
   loadingStatus.value = null;
-  console.log(matchData.value);
+  console.log(rawMatchData.value);
 }).catch((error) => {
+  console.error(error);
   loadingStatus.value = null;
   errorMessage.value = error.message;
 });

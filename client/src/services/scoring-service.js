@@ -1,3 +1,5 @@
+import { UTILITY_DATA } from "../constants";
+
 
 export const calculateScore = (nade) => {
     switch(nade.type) {
