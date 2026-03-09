@@ -1,7 +1,7 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 import { useMatchStore } from '../../stores/useMatchStore';
-import Selector from '../base/Selector.vue';
+import OptionSelector from '../base/OptionSelector.vue';
 import { TEAM_OPTS, UTILITY_OPTS } from '../../constants';
 
 const store = useMatchStore();
@@ -16,7 +16,7 @@ const { selectedUtility, selectedTeam } = storeToRefs(store);
                 <tr>
                     <td>Utility Type</td>
                     <td>  
-                        <Selector
+                        <OptionSelector
                             v-model="selectedUtility"
                             :options="UTILITY_OPTS"/>
                     </td>
@@ -24,7 +24,7 @@ const { selectedUtility, selectedTeam } = storeToRefs(store);
                 <tr>
                     <td>Faction</td>
                     <td>
-                        <Selector
+                        <OptionSelector
                             v-model="selectedTeam"
                             :options="TEAM_OPTS"/>
                     </td>

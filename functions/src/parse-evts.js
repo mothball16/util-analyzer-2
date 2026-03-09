@@ -34,13 +34,16 @@ export const extractHeader = (path) => {
 
 export const extractRounds = (path) => {
   const roundStartEvts = parseEvents(path, ["round_start"]);
-  console.log(roundStartEvts);
-  // const rounds = [];
-  // for (let roundNum = 0; roundNum < roundStartEvts.length; roundNum++) {
-  //   rounds[roundNum] = {
-  //     startTick: roundStartEvts[i].
-  //   }
-  // }
+  const rounds = [];
+  //. { event_name: 'round_start', round: 1, tick: 65 },/
+  for (let roundNumber = 0; roundNumber < roundStartEvts.length; roundNumber++) {
+    rounds[roundNumber] = {
+      tick: roundStartEvts[roundNumber].tick,
+      round: roundStartEvts[roundNumber].round
+    }
+    
+  }
+  return rounds;
 }
 
 export const extractGrenades = (path) => {

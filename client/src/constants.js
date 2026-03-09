@@ -16,3 +16,8 @@ export const TEAM_OPTS = [
     {id: "CT", label: "CTs"},
     {id: "T", label: "Ts"}
 ];
+
+export const COLORS = {
+    TEAM_ONE: "#ff4d4d",
+    TEAM_TWO: "#4d4dff"
+}

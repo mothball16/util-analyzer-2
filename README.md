@@ -2,7 +2,7 @@
 A web application designed to analyze and visualize thrown utility trajectories and effects in Counter-Strike 2 matches from match demo files.
 
 ## Tech Stack
-**Frontend -** Vue 3 (composition API) w/ Pinia for state management
+**Frontend -** Vue 3, Pinia, Vite
 
 **Language -** JavaScript
 

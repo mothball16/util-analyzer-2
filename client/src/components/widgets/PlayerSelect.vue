@@ -2,6 +2,8 @@
 import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useMatchStore } from '../../stores/useMatchStore';
+import Card from '../base/Card.vue';
+import { COLORS } from '../../constants';
 
 const store = useMatchStore();
 const { matchTeams, selectedPlayer } = storeToRefs(store);
@@ -12,36 +14,41 @@ const teamRight = computed(() => matchTeams.value[1] || []);
 const selectPlayer = (player) => {
     selectedPlayer.value = player;
 }
+
+const buttonIsSelected = (player) => {
+    return selectedPlayer.value?.steamid === player.steamid;
+}
+
 </script>
 
 <template>
     <div>
         <div class="player-top">
-            <h2>Select Player</h2>
+            <h3>Select Player</h3>
         </div>
         
         <div class="player-lists">
-            <div class="player-list player-list--r scrollable">
-                <div 
+            <div class="player-list scrollable">
+                <Card 
                     v-for="plr in teamLeft"
+                    :accent="COLORS.TEAM_ONE"
                     :key="plr.steamid"
-                    class="player-card"
-                    :class="{ 'player-card--sel': selectedPlayer?.steamid === plr.steamid}"
+                    :selected="buttonIsSelected(plr)"
                     @click="selectPlayer(plr)"
                 >
                     <h4>{{ plr.name }}</h4>
-                </div>
+                </Card>
             </div>
-            <div class="player-list player-list--b scrollable">
-                <div 
+            <div class="player-list scrollable">
+                <Card 
                     v-for="plr in teamRight"
+                    :accent="COLORS.TEAM_TWO"
                     :key="plr.steamid"
-                    class="player-card" 
-                    :class="{ 'player-card--sel': selectedPlayer?.steamid === plr.steamid}"
+                    :selected="buttonIsSelected(plr)"
                     @click="selectPlayer(plr)"
                 >
                     <h4>{{ plr.name }}</h4>
-                </div>
+                </Card>
             </div>
         </div>
 
@@ -56,6 +63,8 @@ const selectPlayer = (player) => {
 
 .player-lists {
   display: flex;
+  flex: 1;
+  min-height: 0;
 }
 
 .player-list {
@@ -65,52 +74,6 @@ const selectPlayer = (player) => {
   gap: 0.2rem;
   justify-content: space-between;
 }
-
-.player-list--r {
-  border-radius: 2px;
-  border-left: 2px solid #ff4d4d;
-}
-
-.player-list--b {
-
-  border-radius: 2px;
-  border-left: 2px solid #4d4dff;
-}
-
-.player-card {
-  padding: 0rem 0.5rem;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-  z-index: 1;
-}
-
-.player-card:hover {
-  cursor: pointer;
-  color: #c9c9c9;
-}
-
-.player-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 0%;
-  background-color: #343434;
-  z-index: -1;
-  transition: width 0.3s ease;
-}
-
-.player-card--sel, .player-card--sel::before {
-  width: 100%;
-}
-
-
-
-
 
 .scrollable {
   overflow-y: auto;

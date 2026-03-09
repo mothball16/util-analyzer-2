@@ -14,7 +14,7 @@ watch(filteredMatchNades, () => {
 
 <template>
     <div id="container">
-        <div v-for="nade in filteredMatchNades">
+        <div class="card" v-for="nade in filteredMatchNades">
             g
         </div>
     </div>
