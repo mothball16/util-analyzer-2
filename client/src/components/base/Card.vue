@@ -7,23 +7,42 @@ const props = defineProps({
     accent: {
       type: String,
       default: '#ffffff',
-    }
+    },
+    title: {
+      type: String,
+      default: 'title',
+    },
 });
 </script>
 
 <template>
     <div class="card" :class="{ 'card--selected': selected }">
+      <div class="header">
+        <h4>{{ title }}</h4> 
+      </div>
+      <div class="content" v-if="selected">
         <slot></slot>
+      </div>
     </div>
 </template>
 
 <style scoped>
-.card {
-  padding: 0rem 0.5rem;
+.content {
   width: 100%;
+}
+
+.header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+}
+
+.card {
+  padding: 0.25rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
   position: relative;
   z-index: 1;
 

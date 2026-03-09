@@ -31,23 +31,23 @@ const buttonIsSelected = (player) => {
             <div class="player-list scrollable">
                 <Card 
                     v-for="plr in teamLeft"
+                    :title="plr.name"
                     :accent="COLORS.TEAM_ONE"
                     :key="plr.steamid"
                     :selected="buttonIsSelected(plr)"
                     @click="selectPlayer(plr)"
                 >
-                    <h4>{{ plr.name }}</h4>
                 </Card>
             </div>
             <div class="player-list scrollable">
                 <Card 
                     v-for="plr in teamRight"
+                    :title="plr.name"
                     :accent="COLORS.TEAM_TWO"
                     :key="plr.steamid"
                     :selected="buttonIsSelected(plr)"
                     @click="selectPlayer(plr)"
                 >
-                    <h4>{{ plr.name }}</h4>
                 </Card>
             </div>
         </div>
@@ -63,6 +63,8 @@ const buttonIsSelected = (player) => {
 
 .player-lists {
   display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
   flex: 1;
   min-height: 0;
 }
@@ -70,14 +72,8 @@ const buttonIsSelected = (player) => {
 .player-list {
   display: flex;
   flex-flow: column nowrap;
-  width: 50%;
+  width: 100%;
   gap: 0.2rem;
   justify-content: space-between;
-}
-
-.scrollable {
-  overflow-y: auto;
-  scrollbar-width: thin; 
-  scrollbar-color: rgb(121, 121, 121) rgb(24, 24, 24,0);
 }
 </style>

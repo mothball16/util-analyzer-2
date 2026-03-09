@@ -2,6 +2,7 @@
 import { watch } from 'vue';
 import { useMatchStore } from '../../stores/useMatchStore';
 import { storeToRefs } from 'pinia';
+import Card from '../base/Card.vue';
 
 const store = useMatchStore();
 const { filteredMatchNades } = storeToRefs(store);
@@ -13,18 +14,18 @@ watch(filteredMatchNades, () => {
 
 
 <template>
-    <div id="container">
-        <div class="card" v-for="nade in filteredMatchNades">
+    <div class="container scrollable">
+        <Card v-for="nade in filteredMatchNades">
             g
-        </div>
+        </Card>
     </div>
 
 </template>
 
 <style scoped>
-#container {
+.container {
     display: flex;
     flex-flow: column nowrap;
-    overflow-y: scroll;
+    gap: 0.5rem;
 }
 </style>

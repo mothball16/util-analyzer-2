@@ -114,8 +114,8 @@ main {
 }
 
 #summary {
-  grid-column: 4;
-  grid-row: 1 / 5;
+  grid-column: 2 / 4;
+  grid-row: 4;
 }
 
 #summary > ul {
@@ -138,8 +138,8 @@ main {
 }
 
 #select-player {
-  grid-column: 2 / 4;
-  grid-row: 4;
+  grid-column: 4;
+  grid-row: 1 / 5;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -161,4 +161,9 @@ main {
   z-index: 999;
 }
 
+.scrollable {
+  overflow-y: auto;
+  scrollbar-width: thin; 
+  scrollbar-color: rgb(121, 121, 121) rgb(24, 24, 24,0);
+}
 </style>
