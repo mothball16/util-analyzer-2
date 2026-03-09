@@ -1,3 +1,4 @@
+import { log } from "firebase-functions/logger";
 import { GrenadeType } from "./enums.js";
 import { parseEvents, parseGrenades, parsePlayerInfo, parseHeader } from "@laihoe/demoparser2";
 
@@ -31,10 +32,23 @@ export const extractHeader = (path) => {
   return parseHeader(path);
 }
 
+export const extractRounds = (path) => {
+  const roundStartEvts = parseEvents(path, ["round_start"]);
+  console.log(roundStartEvts);
+  // const rounds = [];
+  // for (let roundNum = 0; roundNum < roundStartEvts.length; roundNum++) {
+  //   rounds[roundNum] = {
+  //     startTick: roundStartEvts[i].
+  //   }
+  // }
+}
+
 export const extractGrenades = (path) => {
   const nadeEvts = parseEvents(path, Object.keys(grenadeEvtDict));
   const blindEvts = parseEvents(path, ["player_blind"]);
   const rawGrenades = parseGrenades(path, [], false); 
+  console.log(extractRounds(path));
+
   // init. the final thing we are returning.
   // this is a dict of info mapped to the grenades unique entity ID
   const grenadeData = {}
