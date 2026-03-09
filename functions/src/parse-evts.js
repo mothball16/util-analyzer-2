@@ -1,7 +1,7 @@
 import { log } from "firebase-functions/logger";
 import { GrenadeType } from "./enums.js";
 import { parseEvents, parseGrenades, parsePlayerInfo, parseHeader } from "@laihoe/demoparser2";
-
+import { findRoundOfTick } from "./utils.js";
 // https://gist.github.com/lucasmonstrox/7923db3dbe21536417b266bd4ff6ba44
 // TODO: parserounds example
 
@@ -50,7 +50,7 @@ export const extractGrenades = (path) => {
   const nadeEvts = parseEvents(path, Object.keys(grenadeEvtDict));
   const blindEvts = parseEvents(path, ["player_blind"]);
   const rawGrenades = parseGrenades(path, [], false); 
-  console.log(extractRounds(path));
+  const rounds = extractRounds(path);
 
   // init. the final thing we are returning.
   // this is a dict of info mapped to the grenades unique entity ID
@@ -78,6 +78,7 @@ export const extractGrenades = (path) => {
         },
 
         tickDetonated: e.tick,
+        roundDetonated: findRoundOfTick(rounds, e.tick),
         posDetonated: {
           x: e.x,
           y: e.y,
@@ -109,12 +110,13 @@ export const extractGrenades = (path) => {
   // instead of looping over 100k+ events
   for (const g of rawGrenades) {
     const grenadeEntry = grenadeData[g.grenade_entity_id];
-    if (grenadeEntry && grenadeEntry["loaded"] === false) {
+    if (grenadeEntry && grenadeEntry.loaded === false) {
       grenadeEntry.tickThrown = g.tick;
+      grenadeEntry.roundThrown = findRoundOfTick(rounds, g.tick);
       grenadeEntry.posThrown.x = g.x;
       grenadeEntry.posThrown.y = g.y;
       grenadeEntry.posThrown.z = g.z;
-      grenadeEntry["loaded"] = true;
+      grenadeEntry.loaded = true;
     }
   }
 
