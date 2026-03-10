@@ -5,7 +5,7 @@ import { findRoundOfTick } from "./utils.js";
 // https://gist.github.com/lucasmonstrox/7923db3dbe21536417b266bd4ff6ba44
 // TODO: parserounds example
 
-const grenadeEvtDict = {
+const GRENADE_EVENT_DICT = {
   "hegrenade_detonate": GrenadeType.HE,
   "smokegrenade_detonate": GrenadeType.SMOKE,
   "flashbang_detonate": GrenadeType.FLASHBANG,
@@ -13,8 +13,7 @@ const grenadeEvtDict = {
   "decoy_detonate": GrenadeType.DECOY,
 }
 
-export const extractTeams = (path) => {
-  const rawPlrs = parsePlayerInfo(path);
+const extractTeams = (rawPlrs) => {
   const teams = [{}, {}];
 
   for (const p of rawPlrs) {
@@ -27,38 +26,27 @@ export const extractTeams = (path) => {
   return teams;
 }
 
-
-export const extractHeader = (path) => {
-  return parseHeader(path);
-}
-
-export const extractRounds = (path) => {
-  const roundStartEvts = parseEvents(path, ["round_start"]);
+const extractRounds = (rawStartEvents) => {
   const rounds = [];
   //. { event_name: 'round_start', round: 1, tick: 65 },/
-  for (let roundNumber = 0; roundNumber < roundStartEvts.length; roundNumber++) {
+  for (let roundNumber = 0; roundNumber < rawStartEvents.length; roundNumber++) {
     rounds[roundNumber] = {
-      tick: roundStartEvts[roundNumber].tick,
-      round: roundStartEvts[roundNumber].round
+      tick: rawStartEvents[roundNumber].tick,
+      round: rawStartEvents[roundNumber].round
     }
-    
   }
   return rounds;
 }
 
-export const extractGrenades = (path) => {
-  const nadeEvts = parseEvents(path, Object.keys(grenadeEvtDict));
-  const blindEvts = parseEvents(path, ["player_blind"]);
-  const rawGrenades = parseGrenades(path, [], false); 
-  const rounds = extractRounds(path);
 
+const extractGrenades = (rounds, rawGrenadeInstances, rawGrenadeEvents, rawContextEvents) => {
   // init. the final thing we are returning.
   // this is a dict of info mapped to the grenades unique entity ID
   const grenadeData = {}
 
   // https://cs2.poggu.me/dumped-data/game-events/
-  for (const e of nadeEvts) {
-    const grenadeType = grenadeEvtDict[e.event_name];
+  for (const e of rawGrenadeEvents) {
+    const grenadeType = GRENADE_EVENT_DICT[e.event_name];
     // note to self; this is a bit hacky, but a grenade cant be properly mapped if it didnt have an explode evt
     // so this would, on occurence of an explosion event, create an entry to the grenade entity list
     // since its parsed chronologically, the first entry should have where we threw it and which tick we
@@ -89,7 +77,8 @@ export const extractGrenades = (path) => {
     }
   }
 
-  for (const e of blindEvts) {
+  /*
+  for (const e of rawContextEvents) {
   //  https://cs2.poggu.me/dumped-data/game-events#player_blind
     // its guaranteed that this event will be after the grenade has been boomed, but it wouldnt be so bad to assert it anyways
     const entry = grenadeData[e.entityid];
@@ -102,13 +91,13 @@ export const extractGrenades = (path) => {
       blinded: e.blind_duration,
       fullBlinded: e.blind_duration > 1.5,
     }
-  }
+  }*/
 
   // from the parsed grenade data, naively check each one and ignore any entries for any entity IDs after the first entry
   // the first entry will have the data about where the grenade originated from
   // this is the only data we need tbh but i dont know enough about demoparser to know if there is a better way to do this
   // instead of looping over 100k+ events
-  for (const g of rawGrenades) {
+  for (const g of rawGrenadeInstances) {
     const grenadeEntry = grenadeData[g.grenade_entity_id];
     if (grenadeEntry && grenadeEntry.loaded === false) {
       grenadeEntry.tickThrown = g.tick;
@@ -124,3 +113,24 @@ export const extractGrenades = (path) => {
 
 }
 
+export const extractMatchData = (path) => {
+  // get raw events
+  const rawHeader = parseHeader(path);
+  const rawPlayers = parsePlayerInfo(path);
+  const rawStartEvents = parseEvents(path, ["round_start"]);
+  
+  const rawGrenadeInstances = parseGrenades(path, [], false); 
+  const rawGrenadeEvents = parseEvents(path, Object.keys(GRENADE_EVENT_DICT));
+  const rawContextEvents = parseEvents(path, ["player_blind"]);
+
+  // call helper funcs
+  const teams = extractTeams(rawPlayers);
+  const rounds = extractRounds(rawStartEvents);
+  const grenades = extractGrenades(rounds, rawGrenadeInstances, rawGrenadeEvents, rawContextEvents);
+  const header = rawHeader;
+  return {
+    teams,
+    grenades,
+    header
+  };
+}

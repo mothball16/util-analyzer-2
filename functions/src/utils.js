@@ -17,3 +17,7 @@ export const findRoundOfTick = (rounds, targetTick) => {
     }
     return result;
 }
+
+export const getFlashAssists = (nade, kills) => {
+    
+}

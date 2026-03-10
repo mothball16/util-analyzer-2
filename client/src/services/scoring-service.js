@@ -4,6 +4,7 @@ import { UTILITY_DATA } from "../constants";
 export const calculateScore = (nade) => {
     switch(nade.type) {
         case UTILITY_DATA.flashbang.id:
+            console.log(nade);
             return 1;
         case UTILITY_DATA.hegrenade.id:
             return 1;

@@ -8,7 +8,7 @@ import MatchSummary from './components/widgets/MatchSummary.vue';
 import PlayerSelect from './components/widgets/PlayerSelect.vue';
 import ScreenTooSmall from './components/ScreenTooSmall.vue';
 import UtilityCatalog from './components/widgets/UtilityCatalog.vue';
-import { UI, UTILITY_OPTS, TEAM_OPTS } from "./constants.js";
+import { UI } from "./constants.js";
 import { getMatchData } from './services/data-service.js';
 import { useMatchStore } from './stores/useMatchStore.js';
 import { storeToRefs } from 'pinia';
