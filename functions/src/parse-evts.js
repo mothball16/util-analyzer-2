@@ -12,13 +12,21 @@ const GRENADE_EVENT_TO_TYPES = {
   "decoy_detonate": GrenadeType.DECOY,
 }
 
-const CONTEXT_EVENT_NAMES = Object.freeze({
+const ROUND_EVENT_NAMES = Object.freeze({
   ROUND_START: "round_start",
-  PLAYER_BLIND: "player_blind"
+  ROUND_END: "round_end"
+});
+
+const CONTEXT_EVENT_NAMES = Object.freeze({
+  PLAYER_BLIND: "player_blind",
+  PLAYER_HURT: "player_hurt",
+  PLAYER_DEATH: "player_death",
+
 });
 
 // the events that get parsed
 const EVENTS_TO_PARSE = [
+  ...Object.values(ROUND_EVENT_NAMES),
   ...Object.values(CONTEXT_EVENT_NAMES),
   ...Object.keys(GRENADE_EVENT_TO_TYPES)
 ];
@@ -54,7 +62,7 @@ const extractRounds = (rawStartEvents) => {
 }
 
 
-const extractGrenades = (rounds, rawGrenadeInstances, rawGrenadeEvents, rawContextEvents) => {
+const extractGrenades = (rounds, rawGrenadeInstances, rawGrenadeEvents) => {
   // init. the final thing we are returning.
   // this is a dict of info mapped to the grenades unique entity ID
   const grenadeData = {
@@ -80,7 +88,7 @@ const extractGrenades = (rounds, rawGrenadeInstances, rawGrenadeEvents, rawConte
           entityId: e.entityid,
         },
         context: {
-          affectedPlayers: {}
+          
         },
         thrown: {
           tick: null,
@@ -144,6 +152,9 @@ const extractGrenades = (rounds, rawGrenadeInstances, rawGrenadeEvents, rawConte
   return grenadeData.valid;
 }
 
+const fillGrenadeContexts = (grenades, rawContextEvents) => {
+  console.log(grenades);
+}
 
 const filterEventsSingle = (events, eventType) => {
   return events.filter(e => e.event_name === eventType);
@@ -159,15 +170,18 @@ export const extractMatchData = (path) => {
   const rawEvents = parseEvents(path, EVENTS_TO_PARSE);
   const rawGrenadeInstances = parseGrenades(path, [], false); 
 
+  // todo: round extraction should also account round_end event
+  const rawStartEvents = filterEventsSingle(rawEvents, ROUND_EVENT_NAMES.ROUND_START);
 
-  const rawStartEvents = filterEventsSingle(rawEvents, CONTEXT_EVENT_NAMES.ROUND_START);
   const rawContextEvents = filterEventsSingle(rawEvents, CONTEXT_EVENT_NAMES.PLAYER_BLIND);  
   const rawGrenadeEvents = filterEventsArray(rawEvents, Object.keys(GRENADE_EVENT_TO_TYPES));
-  console.log(rawGrenadeEvents);
+
   // call helper funcs
   const teams = extractTeams(rawPlayers);
   const rounds = extractRounds(rawStartEvents);
-  const grenades = extractGrenades(rounds, rawGrenadeInstances, rawGrenadeEvents, rawContextEvents);
+  const grenades = extractGrenades(rounds, rawGrenadeInstances, rawGrenadeEvents);
+  fillGrenadeContexts(grenades, rawContextEvents);
+
   const header = rawHeader;
   return {
     teams,
