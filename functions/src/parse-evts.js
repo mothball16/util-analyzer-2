@@ -100,6 +100,7 @@ const extractGrenades = (rounds, rawGrenadeInstances, rawGrenadeEvents) => {
           }
         },
         detonated: {
+          time: e.game_time - e.round_start_time,
           tick: e.tick,
           round: roundOfDetonation,
           pos: {
@@ -153,7 +154,6 @@ const extractGrenades = (rounds, rawGrenadeInstances, rawGrenadeEvents) => {
 }
 
 const fillGrenadeContexts = (grenades, rawContextEvents) => {
-  console.log(grenades);
 }
 
 const filterEventsSingle = (events, eventType) => {
@@ -167,7 +167,7 @@ export const extractMatchData = (path) => {
   // get raw events
   const rawHeader = parseHeader(path);
   const rawPlayers = parsePlayerInfo(path);
-  const rawEvents = parseEvents(path, EVENTS_TO_PARSE);
+  const rawEvents = parseEvents(path, EVENTS_TO_PARSE, [], ["game_time", "round_start_time"]);
   const rawGrenadeInstances = parseGrenades(path, [], false); 
 
   // todo: round extraction should also account round_end event

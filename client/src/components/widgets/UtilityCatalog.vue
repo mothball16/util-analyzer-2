@@ -3,8 +3,9 @@ import { watch } from 'vue';
 import { useMatchStore } from '../../stores/useMatchStore';
 import { storeToRefs } from 'pinia';
 import Card from '../base/Card.vue';
-import { UTILITY_DATA, COLORS } from '../../constants';
+import { UTILITY_DATA, COLORS, GAME_CONSTS } from '../../constants';
 import { lerpHex } from '../../util/lerp-hex';
+import { numToMMSS } from '../../util/conversion';
 
 
 const store = useMatchStore();
@@ -39,7 +40,7 @@ const getAccent = (score) => {
             :selected="isSelectedGrenade(id)"
             @click="setSelectedGrenadeId(id)"
         >
-        {{ nade.thrown.round }}
+        <b>R{{ nade.thrown.round }}:</b> {{ numToMMSS(GAME_CONSTS.ROUND_TIME - nade.detonated.time) }}
         </Card>
     </div>
 

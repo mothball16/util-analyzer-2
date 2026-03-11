@@ -1,3 +1,7 @@
+export const GAME_CONSTS = {
+    ROUND_TIME: 115
+}
+
 export const UI = {
     TOO_SMALL: 1024,
 };

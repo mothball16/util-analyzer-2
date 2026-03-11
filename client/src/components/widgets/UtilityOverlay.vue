@@ -1,5 +1,5 @@
 <script setup>
-import { gameToAppAxis } from '../../util/plot';
+import { gameToAppAxis } from '../../util/conversion';
 import { ref } from 'vue';
 import { useMatchStore } from '../../stores/useMatchStore';
 import { storeToRefs } from 'pinia';

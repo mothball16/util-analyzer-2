@@ -1,4 +1,4 @@
-import { MAP_DATA } from "./map-consts";
+import { MAP_DATA } from "../data/map-data.js";
 
 const PX_TO_PCT_FACTOR = 10.24
 // translated game_to_pixel_axis from awpy and made it percent based instead
@@ -13,4 +13,11 @@ export const gameToAppAxis = (mapName, position, axis) => {
     if (axis == "x")
         return ((position - start) / scale) / PX_TO_PCT_FACTOR;
     return ((start - position) / scale) / PX_TO_PCT_FACTOR;
+}
+
+
+export const numToMMSS = (num) => {
+    const minutes = Math.floor(num / 60);
+    const seconds = Math.floor(num % 60);
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
