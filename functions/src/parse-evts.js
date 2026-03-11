@@ -1,17 +1,28 @@
-import { log } from "firebase-functions/logger";
 import { GrenadeType } from "./enums.js";
 import { parseEvents, parseGrenades, parsePlayerInfo, parseHeader } from "@laihoe/demoparser2";
 import { findRoundOfTick } from "./utils.js";
 // https://gist.github.com/lucasmonstrox/7923db3dbe21536417b266bd4ff6ba44
 // TODO: parserounds example
 
-const GRENADE_EVENT_DICT = {
+const GRENADE_EVENT_TO_TYPES = {
   "hegrenade_detonate": GrenadeType.HE,
   "smokegrenade_detonate": GrenadeType.SMOKE,
   "flashbang_detonate": GrenadeType.FLASHBANG,
   "inferno_startburn": GrenadeType.MOLOTOV,
   "decoy_detonate": GrenadeType.DECOY,
 }
+
+const CONTEXT_EVENT_NAMES = Object.freeze({
+  ROUND_START: "round_start",
+  PLAYER_BLIND: "player_blind"
+});
+
+// the events that get parsed
+const EVENTS_TO_PARSE = [
+  ...Object.values(CONTEXT_EVENT_NAMES),
+  ...Object.keys(GRENADE_EVENT_TO_TYPES)
+];
+
 
 const getUniqueID = (round, entityId) => {
   return `${round}_${entityId};`
@@ -54,7 +65,7 @@ const extractGrenades = (rounds, rawGrenadeInstances, rawGrenadeEvents, rawConte
   // https://cs2.poggu.me/dumped-data/game-events/
   for (const e of rawGrenadeEvents) {
     const roundOfDetonation = findRoundOfTick(rounds, e.tick);
-    const grenadeType = GRENADE_EVENT_DICT[e.event_name];
+    const grenadeType = GRENADE_EVENT_TO_TYPES[e.event_name];
     const ID = getUniqueID(roundOfDetonation, e.entityid);
     // note to self; this is a bit hacky, but a grenade cant be properly mapped if it didnt have an explode evt
     // so this would, on occurence of an explosion event, create an entry to the grenade entity list
@@ -133,16 +144,26 @@ const extractGrenades = (rounds, rawGrenadeInstances, rawGrenadeEvents, rawConte
   return grenadeData.valid;
 }
 
+
+const filterEventsSingle = (events, eventType) => {
+  return events.filter(e => e.event_name === eventType);
+}
+const filterEventsArray = (events, eventTypes) => {
+  return events.filter(e => eventTypes.includes(e.event_name));
+}
+// the main one!!!
 export const extractMatchData = (path) => {
   // get raw events
   const rawHeader = parseHeader(path);
   const rawPlayers = parsePlayerInfo(path);
-  const rawStartEvents = parseEvents(path, ["round_start"]);
-  
+  const rawEvents = parseEvents(path, EVENTS_TO_PARSE);
   const rawGrenadeInstances = parseGrenades(path, [], false); 
-  const rawGrenadeEvents = parseEvents(path, Object.keys(GRENADE_EVENT_DICT));
-  const rawContextEvents = parseEvents(path, ["player_blind"]);
 
+
+  const rawStartEvents = filterEventsSingle(rawEvents, CONTEXT_EVENT_NAMES.ROUND_START);
+  const rawContextEvents = filterEventsSingle(rawEvents, CONTEXT_EVENT_NAMES.PLAYER_BLIND);  
+  const rawGrenadeEvents = filterEventsArray(rawEvents, Object.keys(GRENADE_EVENT_TO_TYPES));
+  console.log(rawGrenadeEvents);
   // call helper funcs
   const teams = extractTeams(rawPlayers);
   const rounds = extractRounds(rawStartEvents);

@@ -1,3 +1,4 @@
+
 export const findRoundOfTick = (rounds, targetTick) => {
     let low = 0;
     let high = rounds.length - 1;
@@ -8,7 +9,7 @@ export const findRoundOfTick = (rounds, targetTick) => {
         
         if (startOfThisRound <= targetTick) {
             // round began before tick (look right, could be this round but need closest start)
-            result = mid;
+            result = rounds[mid].round;
             low = mid + 1;
         } else {
             // round began after this tick (look left, definitely not this round)
@@ -19,5 +20,5 @@ export const findRoundOfTick = (rounds, targetTick) => {
 }
 
 export const getFlashAssists = (nade, kills) => {
-    
+
 }
