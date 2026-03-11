@@ -13,6 +13,10 @@ const GRENADE_EVENT_DICT = {
   "decoy_detonate": GrenadeType.DECOY,
 }
 
+const getUniqueID = (round, entityId) => {
+  return `${round}_${entityId};`
+}
+
 const extractTeams = (rawPlrs) => {
   const teams = [{}, {}];
 
@@ -42,37 +46,49 @@ const extractRounds = (rawStartEvents) => {
 const extractGrenades = (rounds, rawGrenadeInstances, rawGrenadeEvents, rawContextEvents) => {
   // init. the final thing we are returning.
   // this is a dict of info mapped to the grenades unique entity ID
-  const grenadeData = {}
+  const grenadeData = {
+    valid: {},
+    processing: {}
+  }
 
   // https://cs2.poggu.me/dumped-data/game-events/
   for (const e of rawGrenadeEvents) {
+    const roundOfDetonation = findRoundOfTick(rounds, e.tick);
     const grenadeType = GRENADE_EVENT_DICT[e.event_name];
+    const ID = getUniqueID(roundOfDetonation, e.entityid);
     // note to self; this is a bit hacky, but a grenade cant be properly mapped if it didnt have an explode evt
     // so this would, on occurence of an explosion event, create an entry to the grenade entity list
     // since its parsed chronologically, the first entry should have where we threw it and which tick we
     // threw it on. nothing past that entry is relevant because the mapping for now is just a simple line from origin to destination
-    if (!grenadeData[e.entityid]) {
-      grenadeData[e.entityid] = {
-        loaded: false,
-        type: grenadeType,
-        owner: e.user_steamid,
-        owner_name: e.user_name,
-        // this is grabbed in the pass over the parsed grenade data
-        tickThrown: null,
-        posThrown: {
-          x: null,
-          y: null,
-          z: null
+    if (!grenadeData.processing[ID]) {
+      grenadeData.processing[ID] = {
+        meta: {
+          type: grenadeType,
+          owner: e.user_steamid,
+          ownerName: e.user_name,
+          entityId: e.entityid,
         },
-
-        tickDetonated: e.tick,
-        roundDetonated: findRoundOfTick(rounds, e.tick),
-        posDetonated: {
-          x: e.x,
-          y: e.y,
-          z: e.z
+        context: {
+          affectedPlayers: {}
         },
-        affectedPlayers: {}
+        thrown: {
+          tick: null,
+          round: null,
+          pos: {
+            x: null,
+            y: null,
+            z: null
+          }
+        },
+        detonated: {
+          tick: e.tick,
+          round: roundOfDetonation,
+          pos: {
+            x: e.x,
+            y: e.y,
+            z: e.z
+          }
+        }
       }
     }
   }
@@ -86,7 +102,7 @@ const extractGrenades = (rounds, rawGrenadeInstances, rawGrenadeEvents, rawConte
       throw new Error("player_blind event somehow parsed before flashbang_detonate event, this shouldnt happen");
 
     // flashbangs also shouldnt be player blinding the same UID more than once
-    entry.affectedPlayers[e.user_steamid] = {
+    entry.context.affectedPlayers[e.user_steamid] = {
       name: e.user_name,
       blinded: e.blind_duration,
       fullBlinded: e.blind_duration > 1.5,
@@ -98,19 +114,23 @@ const extractGrenades = (rounds, rawGrenadeInstances, rawGrenadeEvents, rawConte
   // this is the only data we need tbh but i dont know enough about demoparser to know if there is a better way to do this
   // instead of looping over 100k+ events
   for (const g of rawGrenadeInstances) {
-    const grenadeEntry = grenadeData[g.grenade_entity_id];
-    if (grenadeEntry && grenadeEntry.loaded === false) {
-      grenadeEntry.tickThrown = g.tick;
-      grenadeEntry.roundThrown = findRoundOfTick(rounds, g.tick);
-      grenadeEntry.posThrown.x = g.x;
-      grenadeEntry.posThrown.y = g.y;
-      grenadeEntry.posThrown.z = g.z;
-      grenadeEntry.loaded = true;
+    const roundThrown = findRoundOfTick(rounds, g.tick);
+    const ID = getUniqueID(roundThrown, g.grenade_entity_id);
+    const entry = grenadeData.processing[ID];
+    if (entry) {
+      entry.thrown.tick = g.tick;
+      entry.thrown.round = roundThrown;
+      entry.thrown.pos.x = g.x;
+      entry.thrown.pos.y = g.y;
+      entry.thrown.pos.z = g.z;
+
+      
+      grenadeData.valid[ID] = entry;
+      grenadeData.processing[ID] = null;
     }
   }
-
-  return grenadeData;
-
+  // TODO: log the failed (still processing after second pass) grenades somewhere
+  return grenadeData.valid;
 }
 
 export const extractMatchData = (path) => {

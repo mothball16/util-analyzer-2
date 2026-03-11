@@ -3,12 +3,15 @@ import { ref, computed } from "vue"
 import { UTILITY_OPTS, TEAM_OPTS } from "../constants";
 import { MAP_DATA } from "../data/map-data";
 import { calculateScore } from "../services/scoring-service";
+import { getMatchData } from "../services/data-service.js";
+
+
 
 export const filterNades = (nades, steamid, utilityType, team) => {
     if (!nades) return [];
     return Object.values(nades).filter(n => {
-        const matchPlayer = steamid === "none" || n.owner === steamid; 
-        const matchType = utilityType === "ALL" || n.type === utilityType;
+        const matchPlayer = steamid === "none" || n.meta.owner === steamid; 
+        const matchType = utilityType === "ALL" || n.meta.type === utilityType;
         //const matchTeam = team === "ALL" || n.team === team;
         return matchPlayer && matchType;
     });
@@ -26,6 +29,9 @@ export const useMatchStore = defineStore('match', () => {
     const rawMatchData = ref(null);
     const matchNades = ref({});
 
+    const loadingStatus = ref(null);
+    const errorMessage = ref(null);
+
     //------------------------- actions -------------------------
     function setMatchData(data) {
         rawMatchData.value = data;
@@ -34,6 +40,19 @@ export const useMatchStore = defineStore('match', () => {
             nade.score = calculateScore(nade);
         }
         matchNades.value = processedNades;
+    }
+
+    async function loadMatchData() {
+        try {
+            loadingStatus.value = "Starting...";
+            const data = await getMatchData((msg) => loadingStatus.value = msg);
+            setMatchData(data);
+            loadingStatus.value = null;
+        } catch (error) {
+            console.error(error);
+            errorMessage.value = error.message;
+            loadingStatus.value = null;
+        }
     }
 
     //--------------------- computed refs ---------------------
@@ -56,6 +75,7 @@ export const useMatchStore = defineStore('match', () => {
     const filteredMatchNades = computed(() => 
         filterNades(matchNades.value, selectedPlayer.value.steamid, selectedUtility.value, selectedTeam.value));
 
+    
   return {
     selectedPlayer,
     selectedUtility,
@@ -63,6 +83,8 @@ export const useMatchStore = defineStore('match', () => {
 
     rawMatchData,
     matchNades,
+    loadingStatus,
+    errorMessage,
     matchTeams,
     matchHeader,
     mapInfo,
@@ -70,5 +92,6 @@ export const useMatchStore = defineStore('match', () => {
     filteredMatchNades,
 
     setMatchData,
+    loadMatchData,
    }
 })
