@@ -13,6 +13,7 @@
     "vite": "^7.2.4"
   },
   "dependencies": {
+    "@coreui/vue-chartjs": "^3.0.0",
     "@laihoe/demoparser2": "^0.40.2",
     "firebase": "^12.6.0",
     "leader-line": "^1.0.8",

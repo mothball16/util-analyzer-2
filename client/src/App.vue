@@ -11,6 +11,7 @@ import UtilityCatalog from './components/widgets/UtilityCatalog.vue';
 import { UI } from "./constants.js";
 import { useMatchStore } from './stores/useMatchStore.js';
 import { storeToRefs } from 'pinia';
+import UtilityQuantities from './components/widgets/UtilityQuantities.vue';
 
 const store = useMatchStore();
 const { loadingStatus, errorMessage } = storeToRefs(store);
@@ -34,6 +35,7 @@ onMounted(() => {
         <MatchFilters id="filter" class="card stay-in-grid"/>
         <PlayerSelect id="select-player" class="card stay-in-grid"/>
         <UtilityCatalog id="catalog" class="card stay-in-grid"/>
+        <!-- <UtilityQuantities id="quantities" class="card stay-in-grid"/> -->
     </main>
     <footer>
       <h2>Work in progress - shoot me a msg @mothball16 on discord if u actually use this</h2>
@@ -56,10 +58,10 @@ main {
   display: grid;
   gap: 1.5rem;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(4, 1fr);
+  grid-template-rows: repeat(6, 1fr);
   width: 95%;
   margin: 0 auto;
-  aspect-ratio: 1.5;
+  aspect-ratio: 1.135 ;
   padding: 1.5rem;
 }
 
@@ -73,16 +75,6 @@ main {
 }
 
 
-
-.plot-point {
-  position: absolute;
-  width: 2rem;
-  height: 2rem;
-  background: rgb(250, 192, 67);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 50%;
-}
 .stay-in-grid {
   min-width: 0;
   min-height: 0;
@@ -94,25 +86,14 @@ main {
   grid-row: 1 / 4;
 }
 
-
-#map__points {
-  position: absolute;
-  inset: 0;
-  z-index: 100;
-}
-
 #summary {
   grid-column: 2 / 4;
   grid-row: 4;
 }
 
-#summary > ul {
-  margin-left: 1rem;
-}
-
-#summary tr :nth-child(2) {
-  text-align: right;
-  width: 40%;
+#quantities {
+  grid-column: 1 / 3;
+  grid-row: 5 / 7;
 }
 
 #catalog {
@@ -153,5 +134,12 @@ main {
   overflow-y: auto;
   scrollbar-width: thin; 
   scrollbar-color: rgb(121, 121, 121) rgb(24, 24, 24,0);
+}
+
+main::before {
+  content: "";
+  grid-area: 1 / 1;
+  aspect-ratio: 1;
+  pointer-events: none;
 }
 </style>
