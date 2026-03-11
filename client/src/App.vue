@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed} from 'vue';
+import { onMounted } from 'vue';
 import LoadingScreen from './components/widgets/LoadingScreen.vue';
 import AppHeader from './components/AppHeader.vue';
 import Map from './components/widgets/Map.vue';
@@ -9,27 +9,14 @@ import PlayerSelect from './components/widgets/PlayerSelect.vue';
 import ScreenTooSmall from './components/ScreenTooSmall.vue';
 import UtilityCatalog from './components/widgets/UtilityCatalog.vue';
 import { UI } from "./constants.js";
-import { getMatchData } from './services/data-service.js';
 import { useMatchStore } from './stores/useMatchStore.js';
 import { storeToRefs } from 'pinia';
 
-const loadingStatus = ref(null);
-const errorMessage = ref(null);
-
 const store = useMatchStore();
-const { rawMatchData } = storeToRefs(store);
+const { loadingStatus, errorMessage } = storeToRefs(store);
 
-
-getMatchData((value) => {
-  loadingStatus.value = value;
-}).then((data) => {
-  store.setMatchData(data);
-  loadingStatus.value = null;
-  console.log(rawMatchData.value);
-}).catch((error) => {
-  console.error(error);
-  loadingStatus.value = null;
-  errorMessage.value = error.message;
+onMounted(() => {
+  store.loadMatchData();
 });
 
 </script>
