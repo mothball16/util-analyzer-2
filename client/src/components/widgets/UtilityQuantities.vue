@@ -1,6 +1,5 @@
 <script setup>
 import { CChart } from "@coreui/vue-chartjs"
-
 </script>
 
 

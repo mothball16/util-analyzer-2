@@ -8,11 +8,19 @@ import { lerpHex } from '../../util/lerp-hex';
 
 
 const store = useMatchStore();
-const { filteredMatchNades } = storeToRefs(store);
+const { filteredMatchNades, selectedGrenadeId } = storeToRefs(store);
 
 watch(filteredMatchNades, () => {
     console.log(filteredMatchNades.value);
 });
+
+const setSelectedGrenadeId = (id) => {
+    selectedGrenadeId.value = id;
+}
+
+const isSelectedGrenade = (id) =>
+    selectedGrenadeId.value === id;
+
 
 const getAccent = (score) => {
     return lerpHex(COLORS.NEG_CONNOTATION, COLORS.POS_CONNOTATION, score);
@@ -24,11 +32,14 @@ const getAccent = (score) => {
 <template>
     <div class="container scrollable">
         <Card 
-            v-for="(nade, index) in filteredMatchNades"
-            :key="`${nade.owner}-${nade.tickThrown}-${index}`"
-            :title="UTILITY_DATA[nade.type]?.label || nade.type"
+            v-for="(nade, id) in filteredMatchNades"
+            :key="id"
+            :title="UTILITY_DATA[nade.meta.type]?.label || nade.meta.type"
             :accent="getAccent(nade.score)"
+            :selected="isSelectedGrenade(id)"
+            @click="setSelectedGrenadeId(id)"
         >
+        {{ nade.thrown.round }}
         </Card>
     </div>
 

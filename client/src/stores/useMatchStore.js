@@ -25,6 +25,7 @@ export const useMatchStore = defineStore('match', () => {
     });
     const selectedUtility = ref(UTILITY_OPTS[0].id);
     const selectedTeam = ref(TEAM_OPTS[0].id);
+    const selectedGrenadeId = ref(null);
 
     const rawMatchData = ref(null);
     const matchNades = ref({});
@@ -80,6 +81,7 @@ export const useMatchStore = defineStore('match', () => {
     selectedPlayer,
     selectedUtility,
     selectedTeam,
+    selectedGrenadeId,
 
     rawMatchData,
     matchNades,
