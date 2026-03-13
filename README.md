@@ -1,4 +1,4 @@
-# UtilAnalyzer2
+# util-analyzer-2
 A web application designed to analyze and visualize thrown utility trajectories and effects in Counter-Strike 2 matches from match demo files.
 
 ## Tech Stack
