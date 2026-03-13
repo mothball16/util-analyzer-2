@@ -11,10 +11,10 @@ const { filteredMatchNades } = storeToRefs(store);
 <template>
 <div class="container">
   <UtilityLineup    
-    v-for="(nade, id) in filteredMatchNades"
-    :key="id"
+    v-for="(nade, index) in filteredMatchNades"
+    :key="nade.meta.uniqueId"
+    :id="nade.meta.uniqueId"
     :nade="nade"
-    :id="id"
    />
 </div>
 </template>

@@ -33,12 +33,12 @@ const getAccent = (score) => {
 <template>
     <div class="container scrollable">
         <Card 
-            v-for="(nade, id) in filteredMatchNades"
-            :key="id"
+            v-for="(nade, index) in filteredMatchNades"
+            :key="nade.meta.uniqueId"
             :title="UTILITY_DATA[nade.meta.type]?.label || nade.meta.type"
             :accent="getAccent(nade.score)"
-            :selected="isSelectedGrenade(id)"
-            @click="setSelectedGrenadeId(id)"
+            :selected="isSelectedGrenade(nade.meta.uniqueId)"
+            @click="setSelectedGrenadeId(nade.meta.uniqueId)"
         >
         <b>R{{ nade.thrown.round }}:</b> {{ numToMMSS(GAME_CONSTS.ROUND_TIME - nade.detonated.time) }}
         </Card>
