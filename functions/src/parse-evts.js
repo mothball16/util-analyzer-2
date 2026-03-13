@@ -36,8 +36,8 @@ const EVENTS_TO_PARSE = [
 // ------------------------------------------------------------------------------------------------------------
 
 
-const getUniqueID = (round, entityId) => {
-  return `${round}_${entityId};`
+const getUniqueID = (tick, entityId) => {
+  return `${tick}_${entityId};`
 }
 
 const extractTeams = (rawPlrs) => {
@@ -78,7 +78,7 @@ const extractGrenades = (rounds, rawGrenadeInstances, rawGrenadeEvents) => {
   for (const e of rawGrenadeEvents) {
     const roundOfDetonation = findRoundOfTick(rounds, e.tick);
     const grenadeType = GRENADE_EVENT_TO_TYPES[e.event_name];
-    const ID = getUniqueID(roundOfDetonation, e.entityid);
+    const ID = getUniqueID(e.tick, e.entityid);
     // note to self; this is a bit hacky, but a grenade cant be properly mapped if it didnt have an explode evt
     // so this would, on occurence of an explosion event, create an entry to the grenade entity list
     // since its parsed chronologically, the first entry should have where we threw it and which tick we
@@ -90,6 +90,7 @@ const extractGrenades = (rounds, rawGrenadeInstances, rawGrenadeEvents) => {
           owner: e.user_steamid,
           ownerName: e.user_name,
           entityId: e.entityid,
+          uniqueId: ID
         },
         context: {
           
@@ -139,7 +140,7 @@ const extractGrenades = (rounds, rawGrenadeInstances, rawGrenadeEvents) => {
   // instead of looping over 100k+ events
   for (const g of rawGrenadeInstances) {
     const roundThrown = findRoundOfTick(rounds, g.tick);
-    const ID = getUniqueID(roundThrown, g.grenade_entity_id);
+    const ID = getUniqueID(g.tick, g.grenade_entity_id);
     const entry = grenadeData.processing[ID];
     if (entry) {
       entry.thrown.tick = g.tick;
