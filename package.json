@@ -1,0 +1,10 @@
+{
+  "name": "util-analyzer-2",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix client\" \"cd functions && firebase emulators:start --only functions\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
