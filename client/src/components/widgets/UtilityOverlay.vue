@@ -6,12 +6,10 @@ import { storeToRefs } from 'pinia';
 
 const store = useMatchStore();
 const { filteredMatchNades } = storeToRefs(store);
-
-
 </script>
 
 <template>
-
+    
 </template>
 
 <style scoped>
