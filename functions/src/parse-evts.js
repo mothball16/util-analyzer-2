@@ -4,13 +4,13 @@ import { findRoundOfTick } from "./utils.js";
 // https://gist.github.com/lucasmonstrox/7923db3dbe21536417b266bd4ff6ba44
 // TODO: parserounds example
 
-const GRENADE_EVENT_TO_TYPES = {
+const GRENADE_EVENT_TO_TYPES = Object.freeze({
   "hegrenade_detonate": GrenadeType.HE,
   "smokegrenade_detonate": GrenadeType.SMOKE,
   "flashbang_detonate": GrenadeType.FLASHBANG,
   "inferno_startburn": GrenadeType.MOLOTOV,
   "decoy_detonate": GrenadeType.DECOY,
-}
+});
 
 const ROUND_EVENT_NAMES = Object.freeze({
   ROUND_START: "round_start",
