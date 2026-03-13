@@ -26,7 +26,7 @@ watch(mapInfo, () => {
                 :alt="mapInfo.name"
                 @error="errored = true"
             />
-            <slot name="overlay"></slot>
+            <slot name="overlay" class="map-img"></slot>
         </template>
         <div v-else class="error-msg">
             <p>Map not found: {{ mapInfo.name || 'unknown' }}</p>
