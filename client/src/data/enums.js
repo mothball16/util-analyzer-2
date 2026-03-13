@@ -13,4 +13,9 @@ export const FactionType = Object.freeze({
     CT: "counterterrorist",
     ALL: "all"
 })
-t
+
+export const UtilityImage = Object.freeze({
+    [GrenadeType.HE]: "images/icons/flashbang-pop.png",
+    [GrenadeType.SMOKE]: "images/icons/flashbang-pop.png",
+    [GrenadeType.FLASHBANG]: "images/icons/flashbang-pop.png"
+});
