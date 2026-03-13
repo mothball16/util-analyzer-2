@@ -15,6 +15,7 @@
   "dependencies": {
     "@coreui/vue-chartjs": "^3.0.0",
     "@laihoe/demoparser2": "^0.40.2",
+    "@vue-flow/core": "^1.48.2",
     "firebase": "^12.6.0",
     "leader-line": "^1.0.8",
     "localforage": "^1.10.0",
