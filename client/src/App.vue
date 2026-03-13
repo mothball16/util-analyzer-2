@@ -11,7 +11,7 @@ import UtilityCatalog from './components/widgets/UtilityCatalog.vue';
 import { UI } from "./constants.js";
 import { useMatchStore } from './stores/useMatchStore.js';
 import { storeToRefs } from 'pinia';
-import UtilityOverlay from './components/widgets/UtilityOverlay.vue';
+import UtilityOverlay from './components/widgets/overlay/UtilityOverlay.vue';
 import UtilityQuantities from './components/widgets/UtilityQuantities.vue';
 
 const store = useMatchStore();
@@ -27,7 +27,7 @@ onMounted(() => {
     <AppHeader/>
     <main>
         <!-- todo: overhaul error message - shouldn't be a random div -->
-        <ScreenTooSmall class="overlay" :limit="UI.TOO_SMALL"/>
+        <!-- <ScreenTooSmall class="overlay" :limit="UI.TOO_SMALL"/> -->
         <LoadingScreen v-if="loadingStatus" class="overlay" :message="loadingStatus"/>
         <div v-if="errorMessage" class="overlay"><p>{{ errorMessage }}</p></div>
 
