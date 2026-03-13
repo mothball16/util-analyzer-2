@@ -17,13 +17,17 @@ watch(mapInfo, () => {
 
 <template>
     <div class="container">
-        <img 
-            v-if="!errored && mapInfo.name"
-            class="map-img"
-            :src="`/maps/${mapInfo.name}.webp`" 
-            :alt="mapInfo.name"
-            @error="errored = true"
-        />
+        <!-- note to self - template is inert and not actually treated as a wrapper when rendered -->
+        <!-- this is useful for stuff like vue conditionals where i dont want to disrupt the hierarchy -->
+        <template v-if="!errored && mapInfo.name">
+            <img 
+                class="map-img"
+                :src="`/maps/${mapInfo.name}.webp`" 
+                :alt="mapInfo.name"
+                @error="errored = true"
+            />
+            <slot name="overlay"></slot>
+        </template>
         <div v-else class="error-msg">
             <p>Map not found: {{ mapInfo.name || 'unknown' }}</p>
         </div>
@@ -33,6 +37,7 @@ watch(mapInfo, () => {
 
 <style scoped> 
 .container {
+  position: relative;
   width: 100%;
   aspect-ratio: 1;
   display: flex;
@@ -41,8 +46,8 @@ watch(mapInfo, () => {
 }
 
 .map-img {
+  position: absolute;
   width: 100%;
   height: 100%;
-  object-fit: cover;
 }
 </style>

@@ -3,23 +3,37 @@ import { gameToAppAxis } from '../../util/conversion';
 import { ref } from 'vue';
 import { useMatchStore } from '../../stores/useMatchStore';
 import { storeToRefs } from 'pinia';
+import UtilityDot from '../base/UtilityDot.vue';
 
 const store = useMatchStore();
-const { filteredMatchNades } = storeToRefs(store);
+const { mapInfo, filteredMatchNades } = storeToRefs(store);
 </script>
 
 <template>
-    
+<div class="container">
+  <div    
+    v-for="(nade, id) in filteredMatchNades"
+    :key="id">
+    <UtilityDot
+      :size="2"
+      :x="gameToAppAxis(mapInfo.name, nade.detonated.pos.x, 'x')"
+      :y="gameToAppAxis(mapInfo.name, nade.detonated.pos.y, 'y')"
+    />
+    <UtilityDot
+      :size="1"
+      :x="gameToAppAxis(mapInfo.name, nade.thrown.pos.x, 'x')"
+      :y="gameToAppAxis(mapInfo.name, nade.thrown.pos.y, 'y')"
+    />
+  </div>
+
+
+</div>
 </template>
 
 <style scoped>
-.plot-point {
+.container {
   position: absolute;
-  width: 2rem;
-  height: 2rem;
-  background: rgb(250, 192, 67);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 50%;
+  width: 100%;
+  height: 100%;
 }
 </style>

@@ -11,6 +11,7 @@ import UtilityCatalog from './components/widgets/UtilityCatalog.vue';
 import { UI } from "./constants.js";
 import { useMatchStore } from './stores/useMatchStore.js';
 import { storeToRefs } from 'pinia';
+import UtilityOverlay from './components/widgets/UtilityOverlay.vue';
 import UtilityQuantities from './components/widgets/UtilityQuantities.vue';
 
 const store = useMatchStore();
@@ -30,7 +31,11 @@ onMounted(() => {
         <LoadingScreen v-if="loadingStatus" class="overlay" :message="loadingStatus"/>
         <div v-if="errorMessage" class="overlay"><p>{{ errorMessage }}</p></div>
 
-        <Map id="map" class="card stay-in-grid"/>
+        <Map id="map" class="card stay-in-grid">
+          <template #overlay>
+            <UtilityOverlay />
+          </template>
+        </Map>
         <MatchSummary id="summary" class="card stay-in-grid"/>
         <MatchFilters id="filter" class="card stay-in-grid"/>
         <PlayerSelect id="select-player" class="card stay-in-grid"/>
