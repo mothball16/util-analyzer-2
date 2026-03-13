@@ -1,5 +1,5 @@
 import { defineStore } from "pinia"
-import { ref, computed } from "vue"
+import { ref, computed, watch } from "vue"
 import { UTILITY_OPTS, TEAM_OPTS } from "../constants";
 import { MAP_DATA } from "../data/map-data";
 import { calculateScore } from "../services/scoring-service";
@@ -76,7 +76,17 @@ export const useMatchStore = defineStore('match', () => {
     const filteredMatchNades = computed(() => 
         filterNades(matchNades.value, selectedPlayer.value.steamid, selectedUtility.value, selectedTeam.value));
 
-    
+    //--------------------- watchers ---------------------
+
+    // this removes the user selection if their selection is not currently filtered in
+    watch(filteredMatchNades, (newValue) => {
+        const selectedUtilExists = newValue.some(
+            (g => g.meta.uniqueId === selectedGrenadeId.value))
+        if (!selectedUtilExists) {
+            selectedGrenadeId.value = null;
+        }
+    })
+
   return {
     selectedPlayer,
     selectedUtility,
