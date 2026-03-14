@@ -36,11 +36,11 @@ const getAccent = (score) => {
             v-for="(nade, index) in filteredMatchNades"
             :key="nade.meta.uniqueId"
             :title="UTILITY_DATA[nade.meta.type]?.label || nade.meta.type"
+            :subtitle="'(R' + nade.thrown.round  + ') ' + numToMMSS(GAME_CONSTS.ROUND_TIME - nade.detonated.time)"
             :accent="getAccent(nade.score)"
             :selected="isSelectedGrenade(nade.meta.uniqueId)"
             @click="setSelectedGrenadeId(nade.meta.uniqueId)"
         >
-        <b>R{{ nade.thrown.round }}:</b> {{ numToMMSS(GAME_CONSTS.ROUND_TIME - nade.detonated.time) }}
         </Card>
     </div>
 

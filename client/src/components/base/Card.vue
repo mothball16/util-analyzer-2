@@ -12,13 +12,18 @@ const props = defineProps({
       type: String,
       default: 'title',
     },
+    subtitle: {
+      type: String,
+      default: '',
+    },
 });
 </script>
 
 <template>
     <div class="card" :class="{ 'card--selected': selected }">
       <div class="header">
-        <h4>{{ title }}</h4> 
+        <h4>{{ title }}</h4>
+        <em>{{ subtitle }}</em>
       </div>
       <div class="content" v-if="selected">
         <slot></slot>

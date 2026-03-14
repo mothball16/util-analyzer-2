@@ -79,7 +79,7 @@ const handleClick = () => {
         @click="handleClick"
 
         accent="#ffffff00"
-        :size="1"
+        :size="1.5"
 
         image="images/icons/throw-pos.png"
         :x="gameToAppAxis(mapInfo.name, nade.thrown.pos.x, 'x')"
